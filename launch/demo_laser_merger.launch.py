@@ -23,16 +23,6 @@ def generate_launch_description():
 
     ld = LaunchDescription()
 
-    bag_file_path = f"{get_package_share_directory('dual_laser_merger')}/bag/dual_lidar"
-
-    play_bag_node = ExecuteProcess(
-        cmd=['ros2', 'bag', 'play', bag_file_path, '--loop'],
-        output='screen',
-        shell=False,
-    )
-
-    ld.add_action(play_bag_node)
-
     dual_laser_merger_node = ComposableNodeContainer(
         name='demo_container',
         namespace='',
@@ -44,14 +34,14 @@ def generate_launch_description():
                 plugin='merger_node::MergerNode',
                 name='dual_laser_merger',
                 parameters=[
-                    {'laser_1_topic': '/lidar1/scan'},
-                    {'laser_2_topic': '/lidar2/scan'},
-                    {'merged_topic': '/merged'},
-                    {'target_frame': 'lsc_mount'},
+                    {'laser_1_topic': '/front_lidar/scan'},
+                    {'laser_2_topic': '/rear_lidar/scan'},
+                    {'merged_scan_topic': '/scan'},
+                    {'target_frame': 'base_link'},
                     {'laser_1_x_offset': 0.0},
                     {'laser_1_y_offset': 0.0},
                     {'laser_1_yaw_offset': 0.0},
-                    {'laser_2_x_offset': -0.04},
+                    {'laser_2_x_offset': 0.0},
                     {'laser_2_y_offset': 0.0},
                     {'laser_2_yaw_offset': 0.0},
                     {'tolerance': 0.01},
@@ -76,17 +66,5 @@ def generate_launch_description():
     )
 
     ld.add_action(dual_laser_merger_node)
-
-    rviz_node = Node(
-        package='rviz2',
-        executable='rviz2',
-        output='both',
-        arguments=[
-            '-d',
-            f"{get_package_share_directory('dual_laser_merger')}/config/rviz_config.rviz",
-        ],
-    )
-
-    ld.add_action(rviz_node)
 
     return ld

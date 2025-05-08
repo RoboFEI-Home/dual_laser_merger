@@ -31,7 +31,7 @@ MergerNode::MergerNode(const rclcpp::NodeOptions & options)
 
   merged_scan_pub =
     this->create_publisher<sensor_msgs::msg::LaserScan>(this->get_parameter(
-      "merged_scan_topic").as_string(), rclcpp::SensorDataQoS());
+      "merged_scan_topic").as_string(), 10);
   merged_cloud_pub =
     this->create_publisher<sensor_msgs::msg::PointCloud2>(this->get_parameter(
       "merged_cloud_topic").as_string(), rclcpp::SensorDataQoS());
